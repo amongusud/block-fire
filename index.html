@@ -2,42 +2,59 @@
 <html lang="pt-BR">
 
 <head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <meta charset="UTF-8" />
+  <title>Block Strike Dust2</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
-  <title>Block Strike</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  />
-
+  <link rel="stylesheet" href="style.css"/>
 </head>
 
 <body>
 
+  <!-- MENU -->
+
   <div id="menu">
-    Clique para jogar
+    <div id="menuBox">
+      <h1>BLOCK STRIKE DUST2</h1>
+      <p>Clique para jogar</p>
+      <span>WASD • Mouse • Space</span>
+    </div>
   </div>
+
+  <!-- HUD -->
 
   <div id="hud">
-    BLOCK STRIKE
+
+    <div id="topHud">
+      <div id="health">100 HP</div>
+      <div id="ammo">30 / 90</div>
+    </div>
+
+    <div id="bottomHud">
+      DUST2 • ONLINE
+    </div>
+
   </div>
 
-  <div id="crosshair"></div>
+  <!-- KILLFEED -->
 
-  <script
-    type="module"
-    src="game.js"
-  ></script>
+  <div id="killfeed"></div>
+
+  <!-- CROSSHAIR -->
+
+  <div id="crosshair">
+    <div class="line h"></div>
+    <div class="line v"></div>
+  </div>
+
+  <!-- HITMARKER -->
+
+  <div id="hitmarker"></div>
+
+  <script type="module" src="game.js"></script>
 
 </body>
-
 </html>
 
   
