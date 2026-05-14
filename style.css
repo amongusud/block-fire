@@ -10,17 +10,9 @@ body{
   font-family:Arial, Helvetica, sans-serif;
 }
 
-/* ===================================================== */
-/* CANVAS */
-/* ===================================================== */
-
 canvas{
   display:block;
 }
-
-/* ===================================================== */
-/* MENU */
-/* ===================================================== */
 
 #menu{
   position:absolute;
@@ -30,210 +22,66 @@ canvas{
   justify-content:center;
   align-items:center;
 
-  background:rgba(0,0,0,.85);
+  background:rgba(0,0,0,.9);
 
-  z-index:20;
-}
-
-#menuBox{
-  text-align:center;
   color:white;
+  font-size:38px;
+  font-weight:bold;
+
+  z-index:10;
+  cursor:pointer;
+  user-select:none;
 }
-
-#menuBox h1{
-  font-size:48px;
-  margin-bottom:20px;
-
-  color:#ffcc66;
-
-  text-shadow:0 0 20px black;
-}
-
-#menuBox p{
-  font-size:24px;
-  margin-bottom:10px;
-}
-
-#menuBox span{
-  opacity:.7;
-}
-
-/* ===================================================== */
-/* HUD */
-/* ===================================================== */
 
 #hud{
   position:absolute;
-  inset:0;
+  top:15px;
+  left:15px;
+
+  color:white;
+
+  font-size:15px;
+  line-height:1.6;
+
+  text-shadow:0 0 6px black;
+
+  z-index:5;
+  pointer-events:none;
+}
+
+#crosshair{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  width:16px;
+  height:16px;
+
+  transform:translate(-50%,-50%);
 
   pointer-events:none;
 
   z-index:5;
 }
 
-#topHud{
-  position:absolute;
-
-  top:15px;
-  left:15px;
-  right:15px;
-
-  display:flex;
-  justify-content:space-between;
-
-  color:white;
-
-  font-size:20px;
-  font-weight:bold;
-
-  text-shadow:0 0 10px black;
-}
-
-#bottomHud{
-  position:absolute;
-
-  left:50%;
-  bottom:20px;
-
-  transform:translateX(-50%);
-
-  color:white;
-
-  background:rgba(0,0,0,.4);
-
-  padding:8px 16px;
-
-  border-radius:8px;
-
-  font-size:14px;
-
-  backdrop-filter:blur(5px);
-}
-
-/* ===================================================== */
-/* CROSSHAIR */
-/* ===================================================== */
-
-#crosshair{
-  position:absolute;
-
-  top:50%;
-  left:50%;
-
-  width:20px;
-  height:20px;
-
-  transform:translate(-50%,-50%);
-
-  pointer-events:none;
-
-  z-index:10;
-}
-
-.line{
+#crosshair::before,
+#crosshair::after{
+  content:"";
   position:absolute;
   background:white;
-
-  box-shadow:0 0 10px black;
 }
 
-.h{
-  width:20px;
+#crosshair::before{
+  width:16px;
   height:2px;
-
-  top:9px;
+  top:7px;
   left:0;
 }
 
-.v{
+#crosshair::after{
   width:2px;
-  height:20px;
-
+  height:16px;
+  left:7px;
   top:0;
-  left:9px;
-}
-
-/* ===================================================== */
-/* HITMARKER */
-/* ===================================================== */
-
-#hitmarker{
-  position:absolute;
-
-  top:50%;
-  left:50%;
-
-  width:40px;
-  height:40px;
-
-  transform:translate(-50%,-50%);
-
-  opacity:0;
-
-  pointer-events:none;
-
-  z-index:11;
-}
-
-#hitmarker::before,
-#hitmarker::after{
-  content:"";
-
-  position:absolute;
-
-  background:white;
-}
-
-#hitmarker::before{
-  width:40px;
-  height:2px;
-
-  top:19px;
-}
-
-#hitmarker::after{
-  width:2px;
-  height:40px;
-
-  left:19px;
-}
-
-/* ===================================================== */
-/* KILLFEED */
-/* ===================================================== */
-
-#killfeed{
-  position:absolute;
-
-  top:70px;
-  right:20px;
-
-  color:white;
-
-  font-size:14px;
-
-  text-align:right;
-
-  z-index:12;
-
-  text-shadow:0 0 10px black;
-}
-
-.kill{
-  margin-bottom:6px;
-
-  animation:fade 3s forwards;
-}
-
-@keyframes fade{
-
-  0%{
-    opacity:1;
-    transform:translateX(0);
-  }
-
-  100%{
-    opacity:0;
-    transform:translateX(40px);
-  }
 }
