@@ -1,7 +1,7 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 // ======================================
-// CENA
+// SCENE
 // ======================================
 
 const scene = new THREE.Scene();
@@ -10,8 +10,8 @@ scene.background = new THREE.Color(0x87ceeb);
 
 scene.fog = new THREE.Fog(
   0x87ceeb,
-  20,
-  100
+  25,
+  120
 );
 
 // ======================================
@@ -24,8 +24,6 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-
-camera.position.set(0,1.8,5);
 
 // ======================================
 // RENDERER
@@ -42,56 +40,64 @@ renderer.setSize(
 
 renderer.shadowMap.enabled = true;
 
+renderer.toneMapping =
+  THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure = 1.1;
+
 document.body.appendChild(
   renderer.domElement
 );
 
 // ======================================
-// LUZ
+// LIGHTS
 // ======================================
 
-const light = new THREE.DirectionalLight(
+const sun = new THREE.DirectionalLight(
   0xffffff,
-  1
+  1.5
 );
 
-light.position.set(20,30,10);
+sun.position.set(30,40,20);
 
-light.castShadow = true;
+sun.castShadow = true;
 
-scene.add(light);
+scene.add(sun);
 
 scene.add(
   new THREE.AmbientLight(
     0xffffff,
-    0.4
+    0.5
   )
 );
 
 // ======================================
-// CHÃO
+// FLOOR
 // ======================================
 
 const floor = new THREE.Mesh(
 
-  new THREE.PlaneGeometry(200,200),
+  new THREE.PlaneGeometry(300,300),
 
   new THREE.MeshLambertMaterial({
-    color:0x3a9d23
+    color:0x4caf50
   })
 );
 
-floor.rotation.x = -Math.PI/2;
+floor.rotation.x = -Math.PI / 2;
 
 floor.receiveShadow = true;
 
 scene.add(floor);
 
 // ======================================
-// BLOCOS
+// BLOCKS
 // ======================================
 
 const blocks = [];
+
+const blockGeometry =
+  new THREE.BoxGeometry(1,1,1);
 
 function createBlock(
   x,
@@ -102,7 +108,7 @@ function createBlock(
 
   const block = new THREE.Mesh(
 
-    new THREE.BoxGeometry(1,1,1),
+    blockGeometry,
 
     new THREE.MeshLambertMaterial({
       color
@@ -111,8 +117,6 @@ function createBlock(
 
   block.position.set(x,y,z);
 
-  block.castShadow = true;
-
   block.receiveShadow = true;
 
   scene.add(block);
@@ -120,24 +124,54 @@ function createBlock(
   blocks.push(block);
 }
 
-// mapa
+// ======================================
+// MAP
+// ======================================
 
-for(let x=-20;x<=20;x+=2){
+// chão voxel
 
-  for(let z=-20;z<=20;z+=2){
+for(let x=-20;x<=20;x++){
+
+  for(let z=-20;z<=20;z++){
 
     createBlock(
       x,
-      0.5,
+      -0.5,
       z,
-      Math.random() * 0xffffff
+      0x3f8f3f
     );
+
   }
 }
 
-createBlock(0,2,-5,0xff0000);
-createBlock(3,2,-8,0x0000ff);
-createBlock(-4,2,-6,0xffff00);
+// parede
+
+for(let y=0;y<6;y++){
+
+  createBlock(5,y,-10,0x777777);
+  createBlock(-5,y,-10,0x777777);
+
+}
+
+for(let x=-5;x<=5;x++){
+
+  createBlock(x,5,-10,0x777777);
+
+}
+
+// torres
+
+for(let y=0;y<8;y++){
+
+  createBlock(-10,y,-15,0xaa3333);
+
+}
+
+for(let y=0;y<5;y++){
+
+  createBlock(12,y,-8,0x3333aa);
+
+}
 
 // ======================================
 // PLAYER
@@ -147,16 +181,47 @@ const player = {
 
   height:1.8,
 
-  speed:0.15,
+  speed:0.03,
 
   gravity:0.012,
 
-  velocityY:0,
+  jumpForce:0.22,
 
-  jumpForce:0.25,
+  velocity:new THREE.Vector3(),
 
   canJump:true
 };
+
+camera.position.set(0,player.height,5);
+
+// ======================================
+// GUN
+// ======================================
+
+const gun = new THREE.Mesh(
+
+  new THREE.BoxGeometry(
+    0.25,
+    0.2,
+    0.8
+  ),
+
+  new THREE.MeshStandardMaterial({
+    color:0x222222,
+    metalness:0.7,
+    roughness:0.3
+  })
+);
+
+gun.position.set(
+  0.35,
+  -0.3,
+  -0.7
+);
+
+camera.add(gun);
+
+scene.add(camera);
 
 // ======================================
 // INPUT
@@ -176,7 +241,7 @@ document.addEventListener(
       player.canJump
     ){
 
-      player.velocityY =
+      player.velocity.y =
         player.jumpForce;
 
       player.canJump = false;
@@ -258,13 +323,24 @@ document.addEventListener(
 );
 
 // ======================================
-// MOVIMENTO
+// MOVEMENT
 // ======================================
+
+const direction =
+  new THREE.Vector3();
+
+const forward =
+  new THREE.Vector3();
+
+const right =
+  new THREE.Vector3();
+
+const up =
+  new THREE.Vector3(0,1,0);
 
 function movePlayer(){
 
-  const direction =
-    new THREE.Vector3();
+  direction.set(0,0,0);
 
   if(keys['KeyW']) direction.z -= 1;
   if(keys['KeyS']) direction.z += 1;
@@ -273,30 +349,31 @@ function movePlayer(){
 
   direction.normalize();
 
-  const forward =
-    new THREE.Vector3();
-
   camera.getWorldDirection(forward);
 
   forward.y = 0;
 
   forward.normalize();
 
-  const right =
-    new THREE.Vector3();
-
   right.crossVectors(
-    new THREE.Vector3(0,1,0),
-    forward
+    forward,
+    up
   );
 
-  camera.position.add(
+  // fricção
+
+  player.velocity.x *= 0.82;
+  player.velocity.z *= 0.82;
+
+  // movimento
+
+  player.velocity.add(
     forward.multiplyScalar(
-      direction.z * player.speed
+      -direction.z * player.speed
     )
   );
 
-  camera.position.add(
+  player.velocity.add(
     right.multiplyScalar(
       direction.x * player.speed
     )
@@ -304,11 +381,14 @@ function movePlayer(){
 
   // gravidade
 
-  player.velocityY -=
+  player.velocity.y -=
     player.gravity;
 
-  camera.position.y +=
-    player.velocityY;
+  camera.position.add(
+    player.velocity
+  );
+
+  // chão
 
   if(
     camera.position.y
@@ -319,14 +399,28 @@ function movePlayer(){
     camera.position.y =
       player.height;
 
-    player.velocityY = 0;
+    player.velocity.y = 0;
 
     player.canJump = true;
+  }
+
+  // head bob
+
+  if(
+    direction.length() > 0
+    &&
+    player.canJump
+  ){
+
+    camera.position.y +=
+      Math.sin(
+        Date.now() * 0.01
+      ) * 0.02;
   }
 }
 
 // ======================================
-// TIRO
+// SHOOTING
 // ======================================
 
 const raycaster =
@@ -342,6 +436,18 @@ document.addEventListener(
       document.body
     ) return;
 
+    // recoil
+
+    camera.rotation.x -= 0.03;
+
+    gun.position.z = -0.5;
+
+    setTimeout(() => {
+
+      gun.position.z = -0.7;
+
+    },50);
+
     raycaster.setFromCamera(
       new THREE.Vector2(0,0),
       camera
@@ -356,12 +462,19 @@ document.addEventListener(
 
       const hit = hits[0].object;
 
-      scene.remove(hit);
+      hit.material.emissive =
+        new THREE.Color(0x333333);
 
-      blocks.splice(
-        blocks.indexOf(hit),
-        1
-      );
+      setTimeout(() => {
+
+        scene.remove(hit);
+
+        blocks.splice(
+          blocks.indexOf(hit),
+          1
+        );
+
+      },50);
     }
   }
 );
@@ -376,6 +489,7 @@ const hud =
 function updateHUD(){
 
   hud.innerHTML = `
+    BLOCK STRIKE<br>
     X: ${camera.position.x.toFixed(1)}
     Y: ${camera.position.y.toFixed(1)}
     Z: ${camera.position.z.toFixed(1)}
@@ -423,3 +537,5 @@ window.addEventListener(
     );
   }
 );
+
+  
