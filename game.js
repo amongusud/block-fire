@@ -10,7 +10,7 @@ scene.background = new THREE.Color(0x87ceeb);
 
 scene.fog = new THREE.Fog(
   0x87ceeb,
-  25,
+  20,
   120
 );
 
@@ -67,7 +67,7 @@ scene.add(sun);
 scene.add(
   new THREE.AmbientLight(
     0xffffff,
-    0.5
+    0.45
   )
 );
 
@@ -122,13 +122,13 @@ function createBlock(
   scene.add(block);
 
   blocks.push(block);
+
+  return block;
 }
 
 // ======================================
 // MAP
 // ======================================
-
-// chão voxel
 
 for(let x=-20;x<=20;x++){
 
@@ -140,37 +140,48 @@ for(let x=-20;x<=20;x++){
       z,
       0x3f8f3f
     );
-
   }
 }
 
-// parede
+// paredes
 
 for(let y=0;y<6;y++){
 
   createBlock(5,y,-10,0x777777);
-  createBlock(-5,y,-10,0x777777);
 
+  createBlock(-5,y,-10,0x777777);
 }
 
 for(let x=-5;x<=5;x++){
 
-  createBlock(x,5,-10,0x777777);
-
+  createBlock(
+    x,
+    5,
+    -10,
+    0x777777
+  );
 }
 
 // torres
 
 for(let y=0;y<8;y++){
 
-  createBlock(-10,y,-15,0xaa3333);
-
+  createBlock(
+    -10,
+    y,
+    -15,
+    0xaa3333
+  );
 }
 
 for(let y=0;y<5;y++){
 
-  createBlock(12,y,-8,0x3333aa);
-
+  createBlock(
+    12,
+    y,
+    -8,
+    0x3333aa
+  );
 }
 
 // ======================================
@@ -192,10 +203,14 @@ const player = {
   canJump:true
 };
 
-camera.position.set(0,player.height,5);
+camera.position.set(
+  0,
+  player.height,
+  5
+);
 
 // ======================================
-// GUN
+// WEAPON
 // ======================================
 
 const gun = new THREE.Mesh(
@@ -314,8 +329,8 @@ document.addEventListener(
       e.movementY * 0.002;
 
     pitch = Math.max(
-      -Math.PI/2,
-      Math.min(Math.PI/2,pitch)
+      -Math.PI / 2,
+      Math.min(Math.PI / 2,pitch)
     );
 
     camera.rotation.x = pitch;
@@ -349,7 +364,9 @@ function movePlayer(){
 
   direction.normalize();
 
-  camera.getWorldDirection(forward);
+  camera.getWorldDirection(
+    forward
+  );
 
   forward.y = 0;
 
@@ -368,13 +385,13 @@ function movePlayer(){
   // movimento
 
   player.velocity.add(
-    forward.multiplyScalar(
+    forward.clone().multiplyScalar(
       -direction.z * player.speed
     )
   );
 
   player.velocity.add(
-    right.multiplyScalar(
+    right.clone().multiplyScalar(
       direction.x * player.speed
     )
   );
@@ -462,8 +479,11 @@ document.addEventListener(
 
       const hit = hits[0].object;
 
-      hit.material.emissive =
-        new THREE.Color(0x333333);
+      // highlight
+
+      hit.material.color.set(
+        0x333333
+      );
 
       setTimeout(() => {
 
@@ -490,8 +510,8 @@ function updateHUD(){
 
   hud.innerHTML = `
     BLOCK STRIKE<br>
-    X: ${camera.position.x.toFixed(1)}
-    Y: ${camera.position.y.toFixed(1)}
+    X: ${camera.position.x.toFixed(1)}<br>
+    Y: ${camera.position.y.toFixed(1)}<br>
     Z: ${camera.position.z.toFixed(1)}
   `;
 }
@@ -502,7 +522,9 @@ function updateHUD(){
 
 function animate(){
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(
+    animate
+  );
 
   movePlayer();
 
@@ -537,5 +559,3 @@ window.addEventListener(
     );
   }
 );
-
-  
