@@ -7,12 +7,20 @@
 body{
   overflow:hidden;
   background:#000;
-  font-family:Arial,sans-serif;
+  font-family:Arial, Helvetica, sans-serif;
 }
+
+/* ===================================================== */
+/* CANVAS */
+/* ===================================================== */
 
 canvas{
   display:block;
 }
+
+/* ===================================================== */
+/* MENU */
+/* ===================================================== */
 
 #menu{
   position:absolute;
@@ -24,43 +32,87 @@ canvas{
 
   background:rgba(0,0,0,.85);
 
-  color:white;
+  z-index:20;
+}
 
-  font-size:32px;
-
-  cursor:pointer;
-
-  user-select:none;
-
-  z-index:10;
-
-  transition:background .2s;
-
+#menuBox{
   text-align:center;
+  color:white;
 }
 
-#menu:hover{
-  background:rgba(0,0,0,.75);
+#menuBox h1{
+  font-size:48px;
+  margin-bottom:20px;
+
+  color:#ffcc66;
+
+  text-shadow:0 0 20px black;
 }
+
+#menuBox p{
+  font-size:24px;
+  margin-bottom:10px;
+}
+
+#menuBox span{
+  opacity:.7;
+}
+
+/* ===================================================== */
+/* HUD */
+/* ===================================================== */
 
 #hud{
+  position:absolute;
+  inset:0;
+
+  pointer-events:none;
+
+  z-index:5;
+}
+
+#topHud{
   position:absolute;
 
   top:15px;
   left:15px;
+  right:15px;
+
+  display:flex;
+  justify-content:space-between;
 
   color:white;
 
+  font-size:20px;
+  font-weight:bold;
+
+  text-shadow:0 0 10px black;
+}
+
+#bottomHud{
+  position:absolute;
+
+  left:50%;
+  bottom:20px;
+
+  transform:translateX(-50%);
+
+  color:white;
+
+  background:rgba(0,0,0,.4);
+
+  padding:8px 16px;
+
+  border-radius:8px;
+
   font-size:14px;
 
-  line-height:1.5;
-
-  z-index:5;
-
-  pointer-events:none;
-
-  text-shadow:0 0 5px black;
+  backdrop-filter:blur(5px);
 }
+
+/* ===================================================== */
+/* CROSSHAIR */
+/* ===================================================== */
 
 #crosshair{
   position:absolute;
@@ -68,39 +120,120 @@ canvas{
   top:50%;
   left:50%;
 
-  width:16px;
-  height:16px;
+  width:20px;
+  height:20px;
 
   transform:translate(-50%,-50%);
 
   pointer-events:none;
 
-  z-index:5;
+  z-index:10;
 }
 
-#crosshair::before,
-#crosshair::after{
+.line{
+  position:absolute;
+  background:white;
+
+  box-shadow:0 0 10px black;
+}
+
+.h{
+  width:20px;
+  height:2px;
+
+  top:9px;
+  left:0;
+}
+
+.v{
+  width:2px;
+  height:20px;
+
+  top:0;
+  left:9px;
+}
+
+/* ===================================================== */
+/* HITMARKER */
+/* ===================================================== */
+
+#hitmarker{
+  position:absolute;
+
+  top:50%;
+  left:50%;
+
+  width:40px;
+  height:40px;
+
+  transform:translate(-50%,-50%);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  z-index:11;
+}
+
+#hitmarker::before,
+#hitmarker::after{
   content:"";
 
   position:absolute;
 
   background:white;
-
-  box-shadow:0 0 5px white;
 }
 
-#crosshair::before{
-  width:16px;
+#hitmarker::before{
+  width:40px;
   height:2px;
 
-  top:7px;
-  left:0;
+  top:19px;
 }
 
-#crosshair::after{
+#hitmarker::after{
   width:2px;
-  height:16px;
+  height:40px;
 
-  top:0;
-  left:7px;
+  left:19px;
+}
+
+/* ===================================================== */
+/* KILLFEED */
+/* ===================================================== */
+
+#killfeed{
+  position:absolute;
+
+  top:70px;
+  right:20px;
+
+  color:white;
+
+  font-size:14px;
+
+  text-align:right;
+
+  z-index:12;
+
+  text-shadow:0 0 10px black;
+}
+
+.kill{
+  margin-bottom:6px;
+
+  animation:fade 3s forwards;
+}
+
+@keyframes fade{
+
+  0%{
+    opacity:1;
+    transform:translateX(0);
+  }
+
+  100%{
+    opacity:0;
+    transform:translateX(40px);
+  }
 }
